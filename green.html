@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/star.png" type="image/png">
+    <meta charset="UTF-8">
+    <title>Green Utopia Landing</title>
+    <style>
+
+@font-face {
+    font-family: 'ABCSyntRegular';
+    src: url('ABCSynt-Regular.otf') format('opentype');
+}
+
+
+:root {
+    --primary-color: #86ff86;
+    --bg-color: #FAF9F6;
+    --highlight: #4dff4d;
+    --window-color: #80ff80;
+    --transition-duration: 1s;
+    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+    
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            min-height: 100vh;
+            overflow: hidden;
+            perspective: 1200px;
+            transition: 
+        background-color var(--transition-duration) var(--transition-timing),
+        color var(--transition-duration) var(--transition-timing);
+        transition: background-color 0.5s ease;
+        }
+
+body, .house, .window, .direction-arrow, .energy-particle, .sustainable-glow, .mode-toggle, .timer, .title {
+    transition: color 0.5s ease, text-shadow 0.5s ease, border-color 0.5s ease, background-color 0.5s ease;
+}
+
+@keyframes fadeBackground {
+  0% { background-color: white; }
+  100% { background-color: black; }
+}
+
+        body.night-mode {
+            --primary-color: #80a0ff;
+            --glow-color: rgba(128, 160, 255, 0.3);
+            --bg-color: #000005;
+            --highlight: #000033;
+            --window-color: #adc8ff;
+        }
+
+        .landing-title {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    font-size: 2.5em;
+    letter-spacing: 8px;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+    z-index: 100;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    animation: landingSequence 5s ease-out forwards;
+}
+
+.glitch-text {
+    display: inline-block;
+    position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+    content: 'LANDING ON GREENTOPIA';
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+    filter: blur(1px);
+}
+
+.glitch-text::before {
+    animation: glitchBefore 4s infinite;
+    color: #ff0000;
+    transform: translateX(-2px);
+}
+
+.glitch-text::after {
+    animation: glitchAfter 4s infinite;
+    color: #00ff00;
+    transform: translateX(2px);
+}
+
+.landing-indicator {
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
+    opacity: 0.5;
+}
+
+.altitude-line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
+    transform-origin: left;
+    animation: altitudeLine 5s ease-out forwards;
+}
+
+.radar-scan {
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    opacity: 0;
+    animation: radarPulse 1s infinite;
+}
+
+.landing-stats {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    font-size: 14px;
+    display: flex;
+    gap: 20px;
+}
+
+.stat {
+    opacity: 0.8;
+}
+
+.altitude-value::after {
+    content: '1000';
+    animation: altitudeCount 5s steps(20) forwards;
+}
+
+.velocity-value::after {
+    content: '150';
+    animation: velocityCount 5s steps(20) forwards;
+}
+
+@keyframes landingSequence {
+    0% {
+        transform: translateY(-100px) rotateX(30deg);
+        opacity: 0;
+    }
+    20% { 
+        transform: translateY(-80px) rotateX(20deg);
+        opacity: 1;
+    }
+    60% { transform: translateY(-40px) rotateX(10deg); }
+    70% { transform: translateY(-20px) rotateX(5deg); }
+    85% { 
+        transform: translateY(-10px) rotateX(2deg) translateX(-2px); 
+    }
+    90% { 
+        transform: translateY(-5px) rotateX(1deg) translateX(2px); 
+    }
+    95% { 
+        transform: translateY(-2px) rotateX(0.5deg) translateX(-1px); 
+    }
+    100% { transform: translateY(0) rotateX(0deg); }
+}
+
+@keyframes glitchBefore {
+    0%, 100% { opacity: 0; }
+    95% { opacity: 0; }
+    96% { opacity: 0.5; transform: translateX(3px); }
+    97% { opacity: 0; transform: translateX(-3px); }
+}
+
+@keyframes glitchAfter {
+    0%, 100% { opacity: 0; }
+    95% { opacity: 0; }
+    96% { opacity: 0.5; transform: translateX(-3px); }
+    97% { opacity: 0; transform: translateX(3px); }
+}
+
+@keyframes altitudeLine {
+    0% { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+}
+
+@keyframes radarPulse {
+    0% {
+        opacity: 1;
+        transform: scale(0.3);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+@keyframes altitudeCount {
+    0% { content: '1000'; }
+    20% { content: '800'; }
+    40% { content: '600'; }
+    60% { content: '400'; }
+    80% { content: '200'; }
+    100% { content: '0'; }
+}
+
+@keyframes velocityCount {
+    0% { content: '150'; }
+    20% { content: '120'; }
+    40% { content: '90'; }
+    60% { content: '60'; }
+    80% { content: '30'; }
+    100% { content: '0'; }
+} 
+
+        .frame {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid var(--primary-color);
+            width: 80vw;
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            box-shadow: 0 0 20px var(--glow-color);
+        }
+
+        .house-wrapper {
+            position: relative;
+            transform-style: preserve-3d;
+            animation: initialFloat 4s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        
+
+        .house {
+            white-space: pre;
+    font-size: 1.2em;
+    position: absolute;
+    transform-style: preserve-3d;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+        }
+
+        .house-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: rotateX(10deg) rotateY(0deg);
+}
+
+        .house:hover {
+            text-shadow: 
+                0 0 15px var(--primary-color),
+                0 0 30px var(--glow-color),
+                0 0 45px var(--glow-color);
+        }
+
+
+
+.front-face {
+    transform: translateZ(40px);
+}
+
+.back-face {
+    transform: translateZ(-40px) rotateY(180deg);
+}
+
+.left-face {
+    transform: rotateY(-90deg) translateZ(40px);
+    opacity: 0.8;
+}
+
+.right-face {
+    transform: rotateY(90deg) translateZ(40px);
+    opacity: 0.8;
+}
+
+.top-face {
+    transform: rotateX(-90deg) translateZ(40px);
+    opacity: 0.9;
+}
+
+.bottom-face {
+    transform: rotateX(90deg) translateZ(40px);
+    opacity: 0.7;
+}
+        .window {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--window-color);
+            border-radius: 2px;
+            filter: blur(2px);
+            opacity: 0;
+            transition: 
+            all var(--transition-duration) var(--transition-timing),
+            filter var(--transition-duration) var(--transition-timing);
+        }
+
+
+        .timer {
+            position: fixed;
+            left: 30px;
+            bottom: 30px;
+            font-size: 1.8em;
+            color: var(--primary-color);
+            text-shadow: 0 0 5px var(--primary-color);
+            z-index: 100;
+        }
+
+        .mode-toggle {
+    position: fixed;
+    right: 30px;
+    top: 30px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 1em;
+    z-index: 100;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 0 10px var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.mode-toggle:hover {
+    border-radius: 20px;
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+
+.mode-toggle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: var(--primary-color);
+    transform: translate(-50%, -50%);
+    transition: all 0.4s ease;
+    opacity: 0;
+    border-radius: 50%;
+}
+
+.mode-toggle:hover::before {
+    width: 200%;
+    height: 200%;
+    opacity: 0.1;
+}
+
+.mode-toggle:active {
+    box-shadow: 0 0 5px var(--primary-color);
+}
+
+        .direction-arrow {
+            position: absolute;
+            color: var(--primary-color);
+            font-size: 20px;
+            opacity: 0.7;
+            animation: arrowPulse 2s infinite;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .direction-arrow.active {
+            opacity: 1;
+            transform: scale(1.5);
+            text-shadow: 
+                0 0 10px var(--primary-color),
+                0 0 20px var(--glow-color),
+                0 0 30px var(--glow-color);
+        }
+
+        .direction-hint {
+            position: absolute;
+            color: var(--primary-color);
+            font-size: 0.8em;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .energy-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            filter: blur(1px);
+            pointer-events: none;
+            transition: background-color var(--transition-duration) var(--transition-timing);
+        }
+
+        @keyframes initialFloat {
+            0%, 100% { transform: translateY(0) rotateX(10deg); }
+            50% { transform: translateY(-20px) rotateX(5deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 10px var(--primary-color); }
+            50% { text-shadow: 0 0 20px var(--primary-color),
+                            0 0 30px var(--glow-color); }
+        }
+
+        @keyframes windowGlow {
+            from { opacity: 0.4; filter: blur(2px); }
+            to { opacity: 0.8; filter: blur(4px); }
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(var(--moveX), var(--moveY));
+                opacity: 0;
+            }
+        }
+
+        @keyframes gradientTransition {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+        .sustainable-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+            opacity: 0;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            transition:  opacity var(--transition-duration) var(--transition-timing),
+            
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotateY(-5deg); }
+            75% { transform: translateX(5px) rotateY(5deg); }
+        }
+
+
+        .path div {
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes initialFloat {
+            0%, 100% { transform: translateY(0) rotateX(10deg); }
+            50% { transform: translateY(-20px) rotateX(5deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 10px var(--primary-color); }
+            50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--highlight); }
+        }
+
+
+
+        .house-wrapper:hover .house-3d {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.05);
+}
+
+.house:hover {
+    text-shadow: 
+        0 0 15px var(--primary-color),
+        0 0 30px var(--glow-color),
+        0 0 45px var(--glow-color);
+}
+
+
+.house-face {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.house-face.visible {
+    opacity: 1;
+}
+
+
+.house-wrapper {
+    perspective: 2000px;
+    transform-style: preserve-3d;
+}
+
+
+body.night-mode .house {
+    text-shadow: 
+        0 0 15px var(--primary-color),
+        0 0 30px var(--glow-color),
+        0 0 45px var(--glow-color);
+}
+
+@keyframes rotateFaces {
+    0% { transform: rotateY(0deg) rotateX(10deg); }
+    100% { transform: rotateY(360deg) rotateX(10deg); }
+}
+
+.rotating {
+    animation: rotateFaces 10s linear infinite;
+}
+
+
+.face-active {
+    opacity: 1;
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+
+.glow-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at center,
+        var(--glow-color) 0%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.house-3d:hover .glow-effect {
+    opacity: 0.5;
+}
+        
+        #upperSquare {
+            width: 100vw;
+            height: 0;
+            background-color: black;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #lowerSquare {
+            width: 100vw;
+            height: 0;
+            background-color: black;
+            position: absolute;
+            bottom: 0vh;
+            left: 0;
+        }
+
+        #middleLine{
+            width: 100vw;
+            height: 0;
+            background-color: white;
+            position: absolute;
+            top: 49.9vh;
+            left: 0;
+        }
+
+        .cyber-hints {
+    position: fixed;
+    top: 100px;
+    left: 30px;
+    z-index: 100;
+}
+
+.hint-container {
+    padding: 10px;
+    position: relative;
+    border: 1px solid var(--primary-color);
+    background: transparent;
+    overflow: hidden;
+}
+
+.hint-line {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+    margin: 8px 0;
+    position: relative;
+    padding: 5px 10px;
+}
+
+.key-highlight {
+    font-size: 24px;
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+    padding: 0 5px;
+    animation: keyFlicker 2s infinite;
+}
+
+.key-highlight::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 1px solid var(--primary-color);
+    animation: borderGlow 2s infinite;
+    opacity: 0.5;
+}
+
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-color);
+    opacity: 0.5;
+    animation: scanMove 2s linear infinite;
+}
+
+.corner-decor {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--primary-color);
+}
+
+.top-left {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+.top-right {
+    top: 0;
+    right: 0;
+    border-left: none;
+    border-bottom: none;
+}
+
+.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-right: none;
+    border-top: none;
+}
+
+.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+}
+
+.bracket {
+    opacity: 0.7;
+    animation: bracketPulse 4s infinite;
+}
+
+.glitch-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--primary-color);
+    opacity: 0;
+    mix-blend-mode: overlay;
+    animation: glitchEffect 4s infinite;
+}
+
+@keyframes scanMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100px); }
+}
+
+@keyframes keyFlicker {
+    0%, 100% { opacity: 1; text-shadow: 0 0 20px var(--primary-color); }
+    95% { opacity: 1; text-shadow: 0 0 20px var(--primary-color); }
+    96% { opacity: 0.5; text-shadow: none; }
+    97% { opacity: 0.8; text-shadow: 0 0 20px var(--primary-color); }
+    98% { opacity: 0.5; text-shadow: none; }
+    99% { opacity: 1; text-shadow: 0 0 20px var(--primary-color); }
+}
+
+@keyframes borderGlow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes bracketPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+@keyframes glitchEffect {
+    0%, 100% { opacity: 0; }
+    95% { opacity: 0; }
+    96% { opacity: 0.3; transform: translateX(3px); }
+    97% { opacity: 0; transform: translateX(-3px); }
+    98% { opacity: 0.3; transform: translateX(3px); }
+    99% { opacity: 0; }
+}
+
+.hint-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(134, 255, 134, 0.2),
+        transparent
+    );
+    animation: scanEffect 3s linear infinite;
+}
+
+@keyframes scanEffect {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.cyber-button-container {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 1000;
+}
+
+.cyber-button {
+    position: relative;
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    padding: 15px 30px;
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.cyber-text {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 0 8px var(--primary-color);
+}
+
+.cyber-text.accent {
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.cyber-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-color);
+    opacity: 0;
+    pointer-events: none;
+    animation: glitchEffect 4s infinite;
+    mix-blend-mode: overlay;
+}
+
+.scan-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
+    opacity: 0.5;
+    animation: scanLine 2s linear infinite;
+}
+
+.cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(134, 255, 134, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.cyber-button:hover {
+    box-shadow: 0 0 20px var(--primary-color);
+    text-shadow: 0 0 8px var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.cyber-button:hover::before {
+    left: 100%;
+}
+
+.cyber-button:active {
+    transform: translateY(0);
+}
+
+@keyframes scanLine {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes glitchEffect {
+    0%, 100% { opacity: 0; }
+    95% { opacity: 0; }
+    96% { opacity: 0.3; transform: translateX(3px); }
+    97% { opacity: 0; transform: translateX(-3px); }
+    98% { opacity: 0.3; transform: translateX(3px); }
+    99% { opacity: 0; }
+}
+
+body.night-mode .cyber-button {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+
+.background-image {
+    position: absolute;
+    width: 120vw;
+    height: 120vh;
+    object-fit: cover;
+    opacity: 0.08;
+    will-change: transform;
+    filter: url(#bg-effect);
+}
+
+.background-wrapper {
+   position: fixed;
+   inset: 0;
+   z-index: -2;
+   overflow: hidden;
+   pointer-events: none;
+}
+
+.background-image {
+   position: absolute;
+   width: 120vw;
+   height: 120vh;
+   object-fit: cover;
+   opacity: 0.1;
+   will-change: transform;
+   filter: url(#bg-effect);
+}
+
+.background-1 {
+   top: -10%;
+   left: -10%;
+   animation: offset-float-1 30s infinite cubic-bezier(0.4, 0, 0.2, 1);
+   mix-blend-mode: screen;
+   filter: contrast(1.2) saturate(1.2);
+   animation: squeeze-float-1 30s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.background-2 {
+   bottom: -10%;
+   right: -10%;
+   animation: offset-float-2 35s infinite cubic-bezier(0.4, 0, 0.2, 1);
+   mix-blend-mode: multiply;
+   filter: hue-rotate(30deg) contrast(1.1);
+   animation: squeeze-float-2 35s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes offset-float-1 {
+   0% { transform: translate(0, 0) scale(1.1) rotate(0deg); }
+   25% { transform: translate(3%, -3%) scale(1.15) rotate(1deg); }
+   50% { transform: translate(-2%, 4%) scale(1.12) rotate(-1deg); }
+   75% { transform: translate(4%, 2%) scale(1.14) rotate(0.5deg); }
+   100% { transform: translate(0, 0) scale(1.1) rotate(0deg); }
+}
+
+@keyframes offset-float-2 {
+   0% { transform: translate(0, 0) scale(1.1) rotate(0deg); }
+   25% { transform: translate(-4%, 3%) scale(1.13) rotate(-1deg); }
+   50% { transform: translate(2%, -4%) scale(1.15) rotate(1deg); }
+   75% { transform: translate(-3%, -2%) scale(1.12) rotate(-0.5deg); }
+   100% { transform: translate(0, 0) scale(1.1) rotate(0deg); }
+}
+
+@keyframes squeeze-float-1 {
+   0% { 
+       transform: translate(0, 0) scale(1.1, 1.1); 
+   }
+   25% { 
+       transform: translate(3%, -3%) scale(1.15, 1.1); 
+   }
+   50% { 
+       transform: translate(-2%, 4%) scale(1.1, 1.15); 
+   }
+   75% { 
+       transform: translate(4%, 2%) scale(1.15, 1.08); 
+   }
+   100% { 
+       transform: translate(0, 0) scale(1.1, 1.1); 
+   }
+}
+
+@keyframes squeeze-float-2 {
+   0% { 
+       transform: translate(0, 0) scale(1.1, 1.1); 
+   }
+   25% { 
+       transform: translate(-4%, 3%) scale(1.08, 1.15); 
+   }
+   50% { 
+       transform: translate(2%, -4%) scale(1.15, 1.05); 
+   }
+   75% { 
+       transform: translate(-3%, -2%) scale(1.1, 1.15); 
+   }
+   100% { 
+       transform: translate(0, 0) scale(1.1, 1.1); 
+   }
+}
+
+body.night-mode .background-1 {
+   filter: contrast(1.2) saturate(1.2) brightness(0.7) hue-rotate(180deg);
+}
+
+body.night-mode .background-2 {
+   filter: hue-rotate(210deg) contrast(1.1) brightness(0.6);
+}
+
+.background-image:hover {
+   animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .background-image {
+       animation: none;
+       transform: scale(1.1);
+   }
+}
+
+
+
+
+    </style>
+</head>
+
+<body>
+
+    
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+        <defs>
+            <filter id="bg-effect">
+                <feTurbulence 
+                    type="fractalNoise" 
+                    baseFrequency="0.01" 
+                    numOctaves="2">
+                    <animate 
+                        attributeName="baseFrequency" 
+                        dur="30s" 
+                        values="0.01;0.005;0.01" 
+                        repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap 
+                    in="SourceGraphic" 
+                    in2="turbulence" 
+                    scale="10"/>
+            </filter>
+        </defs>
+     </svg>
+
+    <div class="background-wrapper">
+        <img src="house 2.png" class="background-image background-1">
+        <img src="house 2.png" class="background-image background-2">
+      </div>
+
+
+    <div class="landing-title">
+        <span class="glitch-text">LANDING ON GREENTOPIA</span>
+        <div class="landing-indicator">
+            <div class="altitude-line"></div>
+            <div class="radar-scan"></div>
+            <div class="landing-stats">
+                <div class="stat">ALT:<span class="altitude-value"></span>M</div>
+                <div class="stat">VEL:<span class="velocity-value"></span>KM/H</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cyber-hints">
+        <div class="hint-container">
+            <div class="scan-line"></div>
+            <div class="hint-line">
+                <span class="bracket">[</span>
+                PRESS <span class="key-highlight">V</span> TO INITIALIZE NEW VERSION
+                <span class="bracket">]</span>
+                <div class="glitch-effect"></div>
+            </div>
+            <div class="hint-line">
+                <span class="bracket">[</span>
+                PRESS <span class="key-highlight">X</span> TO RESTORE SYSTEM
+                <span class="bracket">]</span>
+                <div class="glitch-effect"></div>
+            </div>
+            <div class="corner-decor top-left"></div>
+            <div class="corner-decor top-right"></div>
+            <div class="corner-decor bottom-left"></div>
+            <div class="corner-decor bottom-right"></div>
+        </div>
+    </div>
+
+    <div class="frame" id="xiaojinhang">
+        <div class="house-wrapper" id="houseWrapper">
+            <div class="house-3d">
+
+                <pre class="house front-face">
+            _______________________
+            /                       \
+           /   _________________    \
+          /   /                 \    \
+          \   |  [∆∆∆∆∆∆]        |   /
+         /___/   ___________    \    \
+         |   |  |     |     |   |    |
+         |   |  |  _  |  _  |   |    |
+         |   |  | |_| | |_| |   |    |
+         |   |  |_____|_____|   |    |
+         |   |   [Green House]    |   /
+         |   |                  |  /
+         |    \________________/  /
+         |                       /
+         \_____________________ /</pre>
+        
+
+                <pre class="house left-face">
+            /\______________/\
+           /                  \
+          /                    \
+         /      [∆∆∆∆]         \
+        |      ________         |
+        |     |        |        |
+        |     |  ____  |        |
+        |     | |    | |        |
+        |     | |____| |        |
+        |     |________|        |
+         \                    /
+          \__________________/</pre>
+        
+
+                <pre class="house right-face">
+            /\______________/\
+           /                  \
+          /                    \
+         /      [∆∆∆∆]         \
+        |      ________         |
+        |     |        |        |
+        |     |  ____  |        |
+        |     | |    | |        |
+        |     | |____| |        |
+        |     |________|        |
+         \                    /
+          \__________________/</pre>
+        
+
+                <pre class="house top-face">
+            /\________________/\
+           /   [Solar Panels]   \
+          /    ____________     \
+         /    /          \      \
+        /____/            \______\
+        \    \            /      /
+         \    \__________/      /
+          \                    /
+           \__________________/</pre>
+        
+
+                <pre class="house bottom-face">
+            ____________________
+           /\                  /\
+          /  \                /  \
+         /    \______________/    \
+         \    /              \    /
+          \  /                \  /
+           \/                  \/</pre>
+            </div>
+
+<div class="path" id="path">
+    <div>║</div>
+    <div style="margin-left: 10px;">║</div>
+    <div style="margin-left: 20px;">║</div>
+    <div style="margin-left: 30px;">║</div>
+    <div style="margin-left: 40px;">║</div>
+</div>
+
+
+
+
+            <div class="direction-arrow" id="arrowUp" style="top: -30px; left: 50%; transform: translateX(-50%)">↑</div>
+            <div class="direction-arrow" id="arrowDown" style="bottom: -30px; left: 50%; transform: translateX(-50%)">↓</div>
+            <div class="direction-arrow" id="arrowLeft" style="left: -30px; top: 50%; transform: translateY(50%)">←</div>
+            <div class="direction-arrow" id="arrowRight" style="right: -30px; top: 50%; transform: translateY(50%)">→</div>
+
+            <div class="direction-hint" style="top: -45px; left: 50%; transform: translateX(-50%)">Rotate</div>
+            <div class="direction-hint" style="bottom: -45px; left: 50%; transform: translateX(-50%)">Transform</div>
+            <div class="direction-hint" style="left: -45px; top: 50%; transform: translateY(-50%)">Shift</div>
+            <div class="direction-hint" style="right: -45px; top: 50%; transform: translateY(-50%)">Morph</div>
+
+        </div>
+
+        
+
+
+        
+    </div>
+
+    <div class="cyber-button-container">
+        <button class="cyber-button">
+            <span class="cyber-text">INTERESTED IN DISCOVERING MORE?</span>
+            <span class="cyber-text accent">LET'S MOVE ON</span>
+            <div class="cyber-glitch"></div>
+            <div class="scan-effect"></div>
+        </button>
+    </div>
+
+    <div id="upperSquare"></div>
+    <div id="middleLine"></div>
+    <div id="lowerSquare"></div>
+
+    <div class="timer" id="timer">00:00:00</div>
+    <button class="mode-toggle" id="modeToggle">Day Mode / Night Mode</button>
+
+    <script>
+
+        
+
+
+        const HouseOfXiaojinhang = document.getElementById('xiaojinhang').innerHTML;
+        let video;
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    document.addEventListener('keydown', function(event) {
+    const upperSquare = document.getElementById('upperSquare');
+    const middleLine = document.getElementById('middleLine');
+    const lowerSquare = document.getElementById('lowerSquare');
+    const HouseOfXiaojinhangDiv = document.getElementById('xiaojinhang');
+    const frame = document.querySelector('.frame');
+    let square_height = 0;
+    let line_width = 100;
+
+    function Transition() {
+        if (square_height < 50) {
+            square_height += 0.5;
+            upperSquare.style.height = square_height + 'vh';
+            lowerSquare.style.height = square_height + 'vh';
+
+            frame.style.border = 'none';
+            frame.style.boxShadow = 'none';
+            requestAnimationFrame(Transition);
+        } 
+        else if (line_width > 1) {
+            line_width -= 1;
+            middleLine.style.height = '0.2vh';
+            middleLine.style.width = 2 * line_width + 'vh';
+            middleLine.style.left = 100 - line_width + 'vh';
+            requestAnimationFrame(Transition);
+        }
+        else {
+            video = document.createElement('video');
+            video.src = 'videos/特效加倍.mp4';
+            video.autoplay = true;
+            document.body.appendChild(video);
+            HouseOfXiaojinhangDiv.innerHTML = '';
+            upperSquare.style.height = '0vh';
+            middleLine.style.height = '0vh';
+            lowerSquare.style.height = '0vh';
+        }
+    }
+
+    if (event.code === 'KeyV') {
+        if (!video) {
+            frame.style.transition = 'border 0.3s ease, box-shadow 0.3s ease';
+            frame.style.border = 'none';
+            frame.style.boxShadow = 'none';
+            Transition();
+        }
+    }
+    else if (event.code === 'KeyX') {
+        if (video) {
+            video.remove();
+            video = null;
+            HouseOfXiaojinhangDiv.innerHTML = HouseOfXiaojinhang;
+
+            frame.style.transition = 'border 0.3s ease, box-shadow 0.3s ease';
+            frame.style.border = '1px solid var(--primary-color)';
+            frame.style.boxShadow = '0 0 20px var(--glow-color)';
+        }
+    }
+});
+
+class House3DController {
+    constructor() {
+        this.house3D = document.querySelector('.house-3d');
+        this.faces = {
+            front: document.querySelector('.front-face'),
+            left: document.querySelector('.left-face'),
+            right: document.querySelector('.right-face'),
+            top: document.querySelector('.top-face'),
+            bottom: document.querySelector('.bottom-face')
+        };
+        this.isAnimating = false;
+        this.currentRotation = { x: 10, y: 0, z: 0 };
+        this.targetRotation = { x: 10, y: 0, z: 0 };
+        this.initializeEffects();
+    }
+
+    initializeEffects() {
+
+        this.setupMouseTracking();
+
+        this.enhanceKeyboardControls();
+
+        this.setupFacesInteraction();
+    }
+
+    setupMouseTracking() {
+        const wrapper = document.getElementById('houseWrapper');
+        let rect = wrapper.getBoundingClientRect();
+        let centerX = rect.left + rect.width / 2;
+        let centerY = rect.top + rect.height / 2;
+
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!this.isAnimating && !isDragging) {
+                const deltaX = (e.clientX - centerX) / 20;
+                const deltaY = (e.clientY - centerY) / 20;
+
+                this.targetRotation = {
+                    x: 10 - deltaY,
+                    y: deltaX,
+                    z: 0
+                };
+
+                this.updateRotation();
+            }
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+            this.targetRotation = { x: 10, y: 0, z: 0 };
+            this.updateRotation();
+        });
+    }
+
+    enhanceKeyboardControls() {
+        const originalKeydownHandler = document.onkeydown;
+        document.addEventListener('keydown', (e) => {
+            if (originalKeydownHandler) originalKeydownHandler(e);
+
+            switch(e.key) {
+                case 'ArrowUp':
+                    this.targetRotation.x += 5;
+                    break;
+                case 'ArrowDown':
+                    this.targetRotation.x -= 5;
+                    break;
+                case 'ArrowLeft':
+                    this.targetRotation.y -= 5;
+                    break;
+                case 'ArrowRight':
+                    this.targetRotation.y += 5;
+                    break;
+            }
+
+            this.updateRotation();
+        });
+    }
+
+    setupFacesInteraction() {
+        Object.entries(this.faces).forEach(([faceName, faceElement]) => {
+            faceElement.addEventListener('mouseenter', () => {
+                this.highlightFace(faceName);
+                
+
+                const rect = faceElement.getBoundingClientRect();
+                particleSystem.emit(
+                    rect.left + rect.width/2,
+                    rect.top + rect.height/2,
+                    15
+                );
+            });
+
+            faceElement.addEventListener('mouseleave', () => {
+                this.unhighlightFace(faceName);
+            });
+        });
+    }
+
+    highlightFace(faceName) {
+        const face = this.faces[faceName];
+        face.classList.add('face-active');
+        
+        const rotations = {
+            front: { x: 10, y: 0, z: 0 },
+            left: { x: 10, y: -45, z: 0 },
+            right: { x: 10, y: 45, z: 0 },
+            top: { x: 45, y: 0, z: 0 },
+            bottom: { x: -25, y: 0, z: 0 }
+        };
+
+        this.targetRotation = rotations[faceName];
+        this.updateRotation();
+    }
+
+    unhighlightFace(faceName) {
+        this.faces[faceName].classList.remove('face-active');
+    }
+
+    updateRotation() {
+
+        this.currentRotation = {
+            x: this.currentRotation.x + (this.targetRotation.x - this.currentRotation.x) * 0.1,
+            y: this.currentRotation.y + (this.targetRotation.y - this.currentRotation.y) * 0.1,
+            z: this.currentRotation.z + (this.targetRotation.z - this.currentRotation.z) * 0.1
+        };
+
+        this.house3D.style.transform = `
+            rotateX(${this.currentRotation.x}deg)
+            rotateY(${this.currentRotation.y}deg)
+            rotateZ(${this.currentRotation.z}deg)
+        `;
+
+
+        if (Math.abs(this.currentRotation.x - this.targetRotation.x) > 0.01 ||
+            Math.abs(this.currentRotation.y - this.targetRotation.y) > 0.01) {
+            requestAnimationFrame(() => this.updateRotation());
+        }
+    }
+
+    addSpecialEffect(effectName) {
+        switch(effectName) {
+            case 'rotate360':
+                this.isAnimating = true;
+                this.house3D.classList.add('rotating');
+                setTimeout(() => {
+                    this.house3D.classList.remove('rotating');
+                    this.isAnimating = false;
+                }, 10000);
+                break;
+            case 'glitch':
+                this.triggerGlitchEffect();
+                break;
+        }
+    }
+
+    triggerGlitchEffect() {
+        const glitchDuration = 50;
+        const originalTransform = this.house3D.style.transform;
+
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                this.house3D.style.transform = `
+                    ${originalTransform}
+                    translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)
+                `;
+            }, i * glitchDuration);
+        }
+
+        setTimeout(() => {
+            this.house3D.style.transform = originalTransform;
+        }, glitchDuration * 5);
+    }
+}
+
+const house3DController = new House3DController();
+
+
+modeToggle.addEventListener('click', () => {
+
+
+    house3DController.triggerGlitchEffect();
+    setTimeout(() => {
+        house3DController.addSpecialEffect('rotate360');
+    }, 500);
+});
+    
+
+    document.addEventListener('copy', (event) => {
+        event.preventDefault();
+
+    });
+
+    document.addEventListener('paste', (event) => {
+        event.preventDefault();
+    
+    });
+
+    document.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+    
+    });
+
+    document.body.style.userSelect = "none";
+
+    document.addEventListener('keydown', (event) => {
+        if ((event.ctrlKey || event.metaKey) && (event.key === 'c' || event.key === 'v')) {
+            event.preventDefault();
+    
+        }
+    });
+            const pathLines = document.querySelectorAll('#path div');
+
+            let rotationAngle = 0;
+            let scaleValue = 1;
+            let rotate3dAngle = 0;
+
+
+            function resetTransforms() {
+                pathLines.forEach((line) => {
+                    line.style.transform = '';
+                });
+
+
+                rotationAngle = 0;
+                scaleValue = 1;
+                rotate3dAngle = 0;
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+
+                    resetTransforms();
+                } else {
+                    pathLines.forEach((line) => {
+                        switch (event.key) {
+                            case 'ArrowUp':
+                                rotationAngle += 15;
+                                line.style.transform = `rotate(${rotationAngle}deg)`;
+                                break;
+                            case 'ArrowRight':
+                                scaleValue += 0.1;
+                                line.style.transform = `scale(${scaleValue})`;
+                                break;
+                            case 'ArrowDown':
+                                rotate3dAngle += 30;
+                                line.style.transform = `rotate3d(1, 1, 0, ${rotate3dAngle}deg)`;
+                                break;
+                            default:
+                                break;
+                }
+            });
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+   const house = document.getElementById('house');
+   const houseWrapper = document.getElementById('houseWrapper');
+   const timer = document.getElementById('timer');
+   const modeToggle = document.getElementById('modeToggle');
+   const arrows = {
+       up: document.querySelector('.direction-arrow[style*="top: -30px"]'),
+       down: document.querySelector('.direction-arrow[style*="bottom: -30px"]'),
+       left: document.querySelector('.direction-arrow[style*="left: -30px"]'),
+       right: document.querySelector('.direction-arrow[style*="right: -30px"]')
+   };
+
+   let isNightMode = false;
+   let isRotating = false;
+   let rotationX = 0;
+   let rotationY = 0;
+   let isDragging = false;
+   let previousMousePosition = { x: 0, y: 0 };
+
+   class ParticleSystem {
+       constructor() {
+           this.particles = [];
+       }
+
+       createParticle(x, y) {
+           const particle = document.createElement('div');
+           particle.className = 'energy-particle';
+           particle.style.transition = 'none';
+           const currentColor = getComputedStyle(document.body).getPropertyValue('--primary-color');
+           particle.style.backgroundColor = currentColor;
+           document.body.appendChild(particle);
+
+           const angle = Math.random() * Math.PI * 2;
+           const speed = 2 + Math.random() * 2;
+           const distance = 100 + Math.random() * 100;
+           const moveX = Math.cos(angle) * distance;
+           const moveY = Math.sin(angle) * distance;
+
+           particle.style.setProperty('--moveX', `${moveX}px`);
+           particle.style.setProperty('--moveY', `${moveY}px`);
+           particle.style.left = `${x}px`;
+           particle.style.top = `${y}px`;
+           particle.style.animation = `particleFloat ${1 + Math.random()}s ease-out forwards`;
+
+           setTimeout(() => particle.remove(), 2000);
+           return particle;
+       }
+
+       emit(x, y, count = 10) {
+           for (let i = 0; i < count; i++) {
+               setTimeout(() => this.createParticle(x, y), i * 50);
+           }
+       }
+   }
+
+   const particleSystem = new ParticleSystem();
+
+   function createWindows() {
+       const windowPositions = [
+           { top: '45%', left: '30%' },
+           { top: '45%', left: '50%' },
+           { top: '45%', left: '70%' },
+           { top: '60%', left: '30%' },
+           { top: '60%', left: '50%' },
+           { top: '60%', left: '70%' }
+       ];
+
+       windowPositions.forEach(pos => {
+           const window = document.createElement('div');
+           window.className = 'window';
+           window.style.top = pos.top;
+           window.style.left = pos.left;
+           window.style.transition = 'all var(--transition-duration) var(--transition-timing)';
+           houseWrapper.appendChild(window);
+       });
+   }
+
+   function updateHouseTransform() {
+       let transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) translateZ(50px)`;
+       houseWrapper.style.transform = transform;
+   }
+
+
+   modeToggle.addEventListener('click', () => {
+
+    document.body.classList.toggle('night-mode');
+    
+    document.querySelectorAll('.window, .energy-particle, .sustainable-glow').forEach(element => {
+        element.style.transition = 'none';
+    });
+
+    
+       const overlay = document.createElement('div');
+       overlay.style.cssText = `
+           position: fixed;
+           top: 0;
+           left: 0;
+           width: 100vw;
+           height: 100vh;
+           background: radial-gradient(
+               circle at ${event.clientX}px ${event.clientY}px,
+               ${isNightMode ? 'rgba(128, 160, 255, 0.2)' : 'rgba(0, 255, 0, 0.2)'} 0%,
+               transparent 100%
+           );
+           pointer-events: none;
+           opacity: 0;
+           transition: opacity var(--transition-duration) var(--transition-timing);
+           z-index: 1000;
+       `;
+       
+       document.body.appendChild(overlay);
+
+       requestAnimationFrame(() => {
+           overlay.style.opacity = '1';
+           
+           setTimeout(() => {
+               overlay.style.opacity = '0';
+               setTimeout(() => {
+                   overlay.remove();
+                   document.body.classList.remove('transitioning');
+               }, 1500);
+           }, 100);
+       });
+
+       const rect = modeToggle.getBoundingClientRect();
+    particleSystem.emit(
+        rect.left + rect.width/2,
+        rect.top + rect.height/2,
+        30
+    );
+});
+
+   document.addEventListener('keydown', (e) => {
+       let arrow = null;
+       
+       switch(e.key) {
+           case 'ArrowUp':
+               arrow = arrows.up;
+               rotationX -= 5;
+               break;
+           case 'ArrowDown':
+               arrow = arrows.down;
+               rotationX += 5;
+               break;
+           case 'ArrowLeft':
+               arrow = arrows.left;
+               rotationY -= 5;
+               break;
+           case 'ArrowRight':
+               arrow = arrows.right;
+               rotationY += 5;
+               break;
+           case ' ':
+               const rect = houseWrapper.getBoundingClientRect();
+               particleSystem.emit(
+                   rect.left + rect.width/2,
+                   rect.top + rect.height/2,
+                   20
+               );
+               break;
+       }
+
+       if (arrow) {
+           arrow.classList.add('active');
+           setTimeout(() => arrow.classList.remove('active'), 300);
+
+           const rect = arrow.getBoundingClientRect();
+           particleSystem.emit(
+               rect.left + rect.width/2,
+               rect.top + rect.height/2,
+               15
+           );
+
+           updateHouseTransform();
+       }
+   });
+
+   houseWrapper.addEventListener('mousedown', (e) => {
+       isDragging = true;
+       previousMousePosition = { x: e.clientX, y: e.clientY };
+       e.preventDefault();
+   });
+
+   document.addEventListener('mousemove', (e) => {
+       if (isDragging) {
+           const deltaX = e.clientX - previousMousePosition.x;
+           const deltaY = e.clientY - previousMousePosition.y;
+
+           rotationY += deltaX * 0.5;
+           rotationX += deltaY * 0.5;
+
+           updateHouseTransform();
+           previousMousePosition = { x: e.clientX, y: e.clientY };
+
+           if (Math.random() > 0.7) {
+               particleSystem.emit(e.clientX, e.clientY, 5);
+           }
+       }
+   });
+
+   document.addEventListener('mouseup', () => {
+       isDragging = false;
+   });
+
+
+   Object.values(arrows).forEach(arrow => {
+       arrow.addEventListener('mouseenter', () => {
+           arrow.classList.add('active');
+           const rect = arrow.getBoundingClientRect();
+           particleSystem.emit(
+               rect.left + rect.width/2,
+               rect.top + rect.height/2,
+               8
+           );
+       });
+
+       arrow.addEventListener('mouseleave', () => {
+           arrow.classList.remove('active');
+       });
+
+       arrow.addEventListener('click', () => {
+           const rect = arrow.getBoundingClientRect();
+           particleSystem.emit(
+               rect.left + rect.width/2,
+               rect.top + rect.height/2,
+               20
+           );
+       });
+   });
+
+
+   function updateTimer() {
+       const now = new Date();
+       const hours = String(now.getHours()).padStart(2, '0');
+       const minutes = String(now.getMinutes()).padStart(2, '0');
+       const seconds = String(now.getSeconds()).padStart(2, '0');
+       timer.textContent = `${hours}:${minutes}:${seconds}`;
+   }
+
+
+   createWindows();
+   setInterval(updateTimer, 1000);
+   updateTimer();
+
+
+   setInterval(() => {
+       if (Math.random() > 0.7) {
+           const rect = houseWrapper.getBoundingClientRect();
+           particleSystem.emit(
+               rect.left + Math.random() * rect.width,
+               rect.top + Math.random() * rect.height,
+               5
+           );
+       }
+   }, 2000);
+
+   const sustainableGlow = document.createElement('div');
+   sustainableGlow.className = 'sustainable-glow';
+   houseWrapper.appendChild(sustainableGlow);
+
+   function updateSustainableGlow() {
+       const intensity = (Math.sin(Date.now() * 0.001) + 1) * 0.3;
+       sustainableGlow.style.opacity = intensity;
+       requestAnimationFrame(updateSustainableGlow);
+   }
+   updateSustainableGlow();
+});
+
+document.querySelector('.cyber-button').addEventListener('click', function() {
+    window.location.href = './green3.html';
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/star.png" type="image/png">
+    <meta charset="UTF-8">
+    <title>System Maintenance</title>
+    <style>
+
+@font-face {
+    font-family: 'ABCSyntRegular';
+    src: url('ABCSynt-Regular.otf') format('opentype');
+}
+
+        :root {
+            --primary-color: #86ff86;
+            --bg-color: #E8EFE6;
+            --glow-color: rgba(134, 255, 134, 0.2);
+            --error-color: #ff4d4d;
+            --text-shadow: 0 0 10px var(--primary-color);
+            
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'ABCSyntRegular', sans-serif;
+            background-color: none;
+            color: var(--primary-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        }
+
+    
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .maintenance-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4rem;
+            gap: 2rem;
+        }
+
+        .house-container {
+            flex: 1;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .ascii-house {
+            white-space: pre;
+            font-size: 20px;
+            line-height: 1.2;
+            text-shadow: var(--text-shadow);
+            position: relative;
+            animation: houseFloat 4s ease-in-out infinite;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+            opacity: 0.5;
+            animation: scanMove 2s linear infinite;
+            pointer-events: none;
+        }
+
+        .system-status {
+            width: 300px;
+            border: 1px solid var(--primary-color);
+            padding: 1rem;
+            background: rgba(134, 255, 134, 0.05);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--glow-color),
+                transparent
+            );
+            animation: scanEffect 3s linear infinite;
+        }
+
+        .status-item {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-bar {
+            width: 150px;
+            height: 4px;
+            background: rgba(134, 255, 134, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-bar::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: var(--progress);
+            background: var(--primary-color);
+            animation: glitch 0.2s infinite;
+        }
+
+        .chat-section {
+            border: 1px solid var(--primary-color);
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(134, 255, 134, 0.05);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                var(--glow-color),
+                transparent 10%,
+                transparent 90%,
+                var(--glow-color)
+            );
+            pointer-events: none;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .message {
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(134, 255, 134, 0.1);
+            border-left: 3px solid var(--primary-color);
+            animation: messageAppear 0.5s forwards;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            gap: 1rem;
+            border-top: 1px solid var(--primary-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-field {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem;
+            font-family: inherit;
+        }
+
+        .send-button {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: var(--glow-color);
+        }
+
+        .house-part {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .window {
+            animation: windowGlow 2s ease-in-out infinite alternate;
+        }
+
+        .door {
+            animation: doorPulse 3s ease-in-out infinite;
+        }
+
+        .roof {
+            animation: roofShake 5s ease-in-out infinite;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: transparent;
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+            padding: 2rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .error-message.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes houseFloat {
+            0%, 100% { transform: translateY(0) rotateX(10deg); }
+            50% { transform: translateY(-20px) rotateX(5deg); }
+        }
+
+        @keyframes scanMove {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes scanEffect {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes windowGlow {
+            0%, 100% { text-shadow: var(--text-shadow); }
+            50% { text-shadow: 0 0 20px var(--primary-color); }
+        }
+
+        @keyframes doorPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes roofShake {
+            0%, 100% { transform: rotateZ(0deg); }
+            25% { transform: rotateZ(0.5deg); }
+            75% { transform: rotateZ(-0.5deg); }
+        }
+
+        @keyframes glitch {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(2px); }
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glitch {
+            animation: glitchEffect 0.2s infinite;
+        }
+
+        @keyframes glitchEffect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .message.user {
+    border-left: none;
+    border-right: 3px solid var(--primary-color);
+    text-align: right;
+}
+
+.message.bot {
+    border-left: 3px solid var(--primary-color);
+    text-align: left;
+}
+
+
+.intro-sequence {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: var(--bg-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        perspective: 2000px;
+        overflow: hidden;
+    }
+
+    .intro-text {
+    position: relative;
+    font-size: 5vw;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateZ(-100px);
+    animation: textReveal 4s ease-out forwards;
+    mix-blend-mode: screen;
+    }
+
+    .text-layer {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+.text-layer-1 {
+    animation: textLayer1 4s ease-out infinite;
+    color: #ff0000;
+    opacity: 0.5;
+}
+
+.text-layer-2 {
+    animation: textLayer2 4s ease-out infinite;
+    color: #00ff00;
+    opacity: 0.5;
+}
+
+.text-layer-3 {
+    animation: textLayer3 4s ease-out infinite;
+    color: #0000ff;
+    opacity: 0.5;
+}
+
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        transform: translateZ(-200px) rotateX(30deg);
+        filter: blur(20px);
+        letter-spacing: 50px;
+    }
+    20% {
+        opacity: 0.5;
+        transform: translateZ(-100px) rotateX(15deg);
+        filter: blur(10px);
+        letter-spacing: 25px;
+    }
+    40% {
+        opacity: 1;
+        transform: translateZ(0) rotateX(0deg);
+        filter: blur(0);
+        letter-spacing: 5px;
+    }
+    80% {
+        opacity: 1;
+        transform: translateZ(0) rotateX(0deg);
+        filter: blur(0);
+        letter-spacing: 5px;
+    }
+    100% {
+        opacity: 0;
+        transform: translateZ(100px) rotateX(-15deg);
+        filter: blur(20px);
+        letter-spacing: 50px;
+    }
+}
+
+@keyframes textLayer1 {
+    0%, 100% { transform: translate(-5px, -5px); }
+    50% { transform: translate(5px, 5px); }
+}
+
+@keyframes textLayer2 {
+    0%, 100% { transform: translate(5px, -5px); }
+    50% { transform: translate(-5px, 5px); }
+}
+
+@keyframes textLayer3 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(0, 0); }
+}
+
+@keyframes starFloat {
+    0% {
+        transform: translateZ(0) scale(0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateZ(1000px) scale(1);
+        opacity: 0;
+    }
+}
+
+@keyframes planetFloat {
+    0% {
+        transform: translateZ(-1000px) scale(0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.7;
+        filter: blur(2px);
+    }
+    100% {
+        transform: translateZ(500px) scale(2);
+        opacity: 0;
+        filter: blur(4px);
+    }
+}
+
+    .space-corridor {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        animation: corridorMove 3s ease-in forwards;
+        opacity: 0;
+    }
+
+    .star-field {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    animation: starFloat 3s linear infinite;
+}
+
+.planet {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    opacity: 0;
+    transform-style: preserve-3d;
+    animation: planetFloat 4s ease-in-out forwards;
+    box-shadow: 0 0 20px var(--glow-color);
+    mix-blend-mode: screen;
+}
+
+.planet-ring {
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    top: -20%;
+    left: -20%;
+    border: 1px solid var(--primary-color);
+    border-radius: 50%;
+    opacity: 5;
+    animation: rotateRing 10s linear infinite;
+}
+
+@keyframes planetFloat {
+    0% {
+        transform: translateZ(-1000px) scale(0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateZ(0) scale(1);
+    }
+    100% {
+        transform: translateZ(500px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes rotateRing {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+    .corridor-segment {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--primary-color);
+        transform-style: preserve-3d;
+        box-shadow: 0 0 20px var(--glow-color);
+        opacity: 0.7;
+    }
+
+    .corridor-segment:nth-child(1) {
+        transform: translateZ(0px);
+    }
+
+    .corridor-segment:nth-child(2) {
+        transform: translateZ(-500px) scale(0.8);
+    }
+
+    .corridor-segment:nth-child(3) {
+        transform: translateZ(-1000px) scale(0.6);
+    }
+
+    .corridor-lines {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, 
+            transparent 0%, 
+            transparent 45%, 
+            rgba(134, 255, 134, 0.1) 50%,
+            transparent 55%, 
+            transparent 100%),
+        linear-gradient(0deg, 
+            transparent 0%, 
+            transparent 45%, 
+            rgba(134, 255, 134, 0.1) 50%,
+            transparent 55%, 
+            transparent 100%);
+    transform: translateZ(-200px);
+    mix-blend-mode: screen;
+
+    }
+
+    .intro-sequence.fade-out {
+        animation: sequenceFadeOut 1s ease-in forwards;
+    }
+
+    .container {
+        opacity: 0;
+        transform: scale(0.95) translateZ(-100px);
+        transition: all 1s ease-out;
+    }
+
+    .container.show {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+    }
+
+    @keyframes textAppear {
+        0% {
+            opacity: 0;
+            transform: translateZ(-100px) scale(0.8);
+            filter: blur(10px);
+        }
+        20%, 80% {
+            opacity: 1;
+            transform: translateZ(0) scale(1);
+            filter: blur(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateZ(100px) scale(1.2);
+            filter: blur(10px);
+        }
+    }
+
+    @keyframes corridorMove {
+    0% {
+        opacity: 0;
+        transform: translateZ(1000px) scale(2);
+    }
+    20% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 1;
+        transform: translateZ(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateZ(-1000px) scale(0.5);
+    }
+}
+
+@keyframes sequenceFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+        visibility: hidden;
+    }
+}
+
+    .input-field{
+        transition: border-radius 0.3s ease;
+}
+    .input-field:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--glow-color);
+    
+}
+
+.input-field:hover {
+border-radius: 2vh;
+}
+
+.interactive-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: all;
+    z-index: 1;
+    overflow: hidden;
+}
+
+
+.texture-base {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: url('bg.png') repeat;
+    background-size: cover;
+    opacity: 0.5;
+    mix-blend-mode: screen;
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+
+.particle-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.wave-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+
+.energy-wave {
+    position: absolute;
+    border: 2px solid rgba(134, 255, 134, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: waveExpand 2s ease-out forwards;
+}
+
+
+.magnetic-field {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+        circle at center,
+        rgba(134, 255, 134, 0.2) 0%,
+        transparent 70%
+    );
+    transition: opacity 0.3s ease;
+}
+
+@keyframes waveExpand {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.glitch-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(134, 255, 134, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.floating-guide {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    z-index: 1000;
+    cursor: pointer;
+    animation: floatAround 20s linear infinite;
+}
+
+.floating-guide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: colorShift 8s linear infinite;
+    mix-blend-mode: screen;
+}
+
+@keyframes colorShift {
+    0% { filter: brightness(1.2) contrast(1.1) sepia(1) saturate(5) hue-rotate(0deg); }
+    25% { filter: brightness(1.2) contrast(1.1) sepia(1) saturate(5) hue-rotate(90deg); }
+    50% { filter: brightness(1.2) contrast(1.1) sepia(1) saturate(5) hue-rotate(180deg); }
+    75% { filter: brightness(1.2) contrast(1.1) sepia(1) saturate(5) hue-rotate(270deg); }
+    100% { filter: brightness(1.2) contrast(1.1) sepia(1) saturate(5) hue-rotate(360deg); }
+}
+
+@keyframes floatAround {
+    0% { transform: translate(20vw, 20vh); }
+    25% { transform: translate(80vw, 20vh); }
+    50% { transform: translate(80vw, 70vh); }
+    75% { transform: translate(20vw, 70vh); }
+    100% { transform: translate(20vw, 20vh); }
+}
+
+.guide-hint {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(0, 0, 255);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    white-space: nowrap;
+    text-shadow: 0 0 5px var(--primary-color);
+    animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+    </style>
+</head>
+<body>
+
+    
+
+    <div class="floating-guide">
+        <img src="星星动画.gif" alt="Star Guide">
+        <div class="guide-hint">CLICK ME</div> 
+    </div>
+
+    <div class="interactive-background" id="interactiveBackground">
+        <div class="texture-base" id="textureBase"></div>
+        <div class="particle-container" id="particleContainer"></div>
+        <div class="wave-container" id="waveContainer"></div>
+        <div class="magnetic-field" id="magneticField"></div>
+        <div class="glitch-overlay" id="glitchOverlay"></div>
+    </div>
+
+
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+        <defs>
+            <filter id="ripple" x="-50%" y="-50%" width="200%" height="200%">
+                <feTurbulence 
+                    type="turbulence" 
+                    baseFrequency="0.025" 
+                    numOctaves="2" 
+                    result="turbulence">
+                    <animate 
+                        attributeName="baseFrequency" 
+                        dur="10s" 
+                        values="0.025;0.015;0.025" 
+                        repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap 
+                    in="SourceGraphic" 
+                    in2="turbulence" 
+                    scale="15"/>
+            </filter>
+    
+            <filter id="magnetic">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feDisplacementMap 
+                    in="SourceGraphic" 
+                    in2="blur" 
+                    scale="20" 
+                    xChannelSelector="R" 
+                    yChannelSelector="G"/>
+            </filter>
+    
+            <filter id="glitch">
+                <feTurbulence 
+                    type="fractalNoise" 
+                    baseFrequency="0.01" 
+                    numOctaves="1" 
+                    result="noise">
+                    <animate 
+                        attributeName="seed" 
+                        from="0" 
+                        to="100" 
+                        dur="0.5s" 
+                        repeatCount="indefinite"/>
+                </feTurbulence>
+                <feColorMatrix
+                    type="saturate"
+                    values="0"
+                    result="noiseGray"/>
+                <feColorMatrix
+                    in="noiseGray"
+                    type="matrix"
+                    values="1 0 0 0 0
+                            0 1 0 0 0
+                            0 0 1 0 0
+                            0 0 0 1 -0.5"
+                    result="noiseBW"/>
+                <feComposite
+                    in="SourceGraphic"
+                    in2="noiseBW"
+                    operator="arithmetic"
+                    k1="0"
+                    k2="1"
+                    k3="1"
+                    k4="0"/>
+            </filter>
+        </defs>
+    </svg>
+    
+
+
+    <div class="intro-sequence" id="introSequence">
+        <div class="space-corridor">
+            <div class="corridor-segment"></div>
+            <div class="corridor-segment"></div>
+            <div class="corridor-segment"></div>
+            <div class="corridor-lines"></div>
+        </div>
+        
+   
+        <div class="star-field" id="starField"></div>
+        <div class="planet-system" id="planetSystem"></div>
+        
+
+        <div class="text-container">
+            <div class="text-layer text-layer-1">ENJOY YOUR JOURNEY IN GREENTOPIA</div>
+            <div class="text-layer text-layer-2">ENJOY YOUR JOURNEY IN GREENTOPIA</div>
+            <div class="text-layer text-layer-3">ENJOY YOUR JOURNEY IN GREENTOPIA</div>
+            <div class="intro-text">ENJOY YOUR JOURNEY IN GREENTOPIA</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="maintenance-section">
+            <div class="house-container">
+                <div class="scan-line"></div>
+                <pre class="ascii-house">
+<span class="roof">    _____________________
+   /                     \</span>     
+  /  ________________    \    [SYSTEM STATUS]
+ /   |    <span class="window">\\//</span>    |   \    \  > MAINTENANCE...
+/    |    <span class="window">//\\</span>    |    \    \ > ERROR [0xF892]
+\    |  <span class="glitch">SYSTEM    </span>|     |    | > CALIBRATING...
+ \   |  <span class="glitch">OFFLINE   </span>|     |    | > PLEASE WAIT...
+  \  |   <span class="door">....     </span>|     |   /  
+   \ |<span class="door">____________</span>|     |  /   
+    \____________________ /</pre>
+            </div>
+
+            <div class="system-status">
+                <div class="status-item">
+                    <span>System Core</span>
+                    <div class="status-bar" style="--progress: 23%"></div>
+                </div>
+                <div class="status-item">
+                    <span>Network Status</span>
+                    <div class="status-bar" style="--progress: 45%"></div>
+                </div>
+                <div class="status-item">
+                    <span>Memory Cache</span>
+                    <div class="status-bar" style="--progress: 67%"></div>
+                </div>
+                <div class="status-item">
+                    <span>Backup Systems</span>
+                    <div class="status-bar" style="--progress: 89%"></div>
+                </div>
+                <div class="glitch">> CRITICAL ERROR</div>
+            </div>
+        </div>
+
+        <div class="chat-section">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message">
+                    > SYSTEM: Maintenance mode activated. Limited functionality available.
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" class="input-field" id="userInput" placeholder=" ">
+                <button class="send-button" id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+
+
+
+    <script>
+
+document.addEventListener('copy', (event) => {
+        event.preventDefault();
+    });
+
+    document.addEventListener('cut', (event) => {
+        event.preventDefault();
+    });
+
+    document.addEventListener('paste', (event) => {
+        event.preventDefault();
+    });
+
+    document.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+    });
+
+
+
+window.addEventListener('load', () => {
+        const introSequence = document.getElementById('introSequence');
+        const container = document.querySelector('.container');
+        
+
+        setTimeout(() => {
+            document.querySelector('.space-corridor').style.opacity = '1';
+        }, 1000);
+
+
+        setTimeout(() => {
+            introSequence.classList.add('fade-out');
+            container.classList.add('show');
+        }, 2000);
+
+        setTimeout(() => {
+            introSequence.remove();
+        }, 3000);
+    });
+
+
+        const house = document.querySelector('.ascii-house');
+        const parts = {
+            windows: document.querySelectorAll('.window'),
+            door: document.querySelectorAll('.door'),
+            roof: document.querySelector('.roof')
+        };
+
+
+        function randomGlitch() {
+            const part = Math.random() > 0.5 ? parts.windows : parts.door;
+            part.forEach(element => {
+                element.classList.add('glitch');
+                setTimeout(() => element.classList.remove('glitch'), 200);
+            });
+        }
+
+        setInterval(randomGlitch, 3000);
+
+
+        function updateStatusBars() {
+            document.querySelectorAll('.status-bar').forEach(bar => {
+                const newProgress = Math.random() * 100;
+                bar.style.setProperty('--progress', `${newProgress}%`);
+            });
+        }
+
+        setInterval(updateStatusBars, 5000);
+
+
+        const errorMessages = [
+            "CRITICAL: System recalibration required",
+            "ERROR: Maintenance protocols active",
+            "WARNING: Core systems offline",
+            "ALERT: Awaiting system repair",
+            "ERROR: Maintenance cycle incomplete",
+            "CRITICAL: Please stand by"
+        ];
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+
+            house.classList.add('glitch');
+            
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+                house.classList.remove('glitch');
+            }, 2000);
+        }
+
+
+const botResponses = {
+
+    status: "SYSTEM STATUS: Multiple systems currently offline. Maintenance protocols active.",
+    maintenance: "MAINTENANCE PROGRESS: System restoration at 47%. Estimated completion time unknown.",
+    error: "ERROR ANALYSIS: Critical system failure detected. Recovery procedures initiated.",
+    help: "AVAILABLE COMMANDS: status, maintenance, error, reboot, check, help",
+    
+
+    reboot: "REBOOT DENIED: System locked in maintenance mode. Please wait for completion.",
+    check: "DIAGNOSTIC CHECK: Multiple anomalies detected. Repairs in progress.",
+    
+
+    default: "SYSTEM RESPONSE: Command unclear. System capabilities limited during maintenance.",
+    
+
+    time: "ESTIMATED TIME: Maintenance duration currently indeterminate.",
+    progress: "CURRENT PROGRESS: System restoration ongoing. Multiple modules pending repair.",
+    fix: "REPAIR STATUS: Automated repair systems active. Manual intervention required.",
+    why: "INCIDENT REPORT: Critical system overload detected at 0x8F92. Maintenance mode activated."
+};
+
+function getBotResponse(input) {
+    const text = input.toLowerCase();
+    
+
+    if (text.includes('status')) return botResponses.status;
+    if (text.includes('maintenance')) return botResponses.maintenance;
+    if (text.includes('error')) return botResponses.error;
+    if (text.includes('help')) return botResponses.help;
+    if (text.includes('reboot')) return botResponses.reboot;
+    if (text.includes('check')) return botResponses.check;
+    if (text.includes('time')) return botResponses.time;
+    if (text.includes('progress')) return botResponses.progress;
+    if (text.includes('fix')) return botResponses.fix;
+    if (text.includes('why')) return botResponses.why;
+    
+    return botResponses.default;
+}
+
+function addMessage(text, isUser = false) {
+    const message = document.createElement('div');
+    message.className = 'message' + (isUser ? ' user' : ' bot');
+    message.textContent = isUser ? `> USER: ${text}` : `> SYSTEM: ${text}`;
+    chatMessages.appendChild(message);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function handleInput() {
+    const text = userInput.value.trim();
+    if (text) {
+        addMessage(text, true);
+        userInput.value = '';
+        
+
+        setTimeout(() => {
+            addMessage(getBotResponse(text), false);
+            showError(errorMessages[Math.floor(Math.random() * errorMessages.length)]);
+        }, 500);
+    }
+} 
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+
+        function addMessage(text) {
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = `> ${text}`;
+            chatMessages.appendChild(message);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleInput() {
+            const text = userInput.value.trim();
+            if (text) {
+                addMessage(text);
+                userInput.value = '';
+                showError(errorMessages[Math.floor(Math.random() * errorMessages.length)]);
+            }
+        }
+
+        sendButton.addEventListener('click', handleInput);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleInput();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target !== userInput && e.target !== sendButton) {
+                showError(errorMessages[Math.floor(Math.random() * errorMessages.length)]);
+            }
+        });
+
+
+        function animateHouse() {
+            const partKeys = Object.keys(parts);
+            const randomPart = parts[partKeys[Math.floor(Math.random() * partKeys.length)]];
+            
+            if (Array.isArray(randomPart)) {
+                randomPart.forEach(element => {
+                    element.style.opacity = '0.5';
+                    setTimeout(() => element.style.opacity = '1', 200);
+                });
+            } else if (randomPart) {
+                randomPart.style.opacity = '0.5';
+                setTimeout(() => randomPart.style.opacity = '1', 200);
+            }
+        }
+
+        setInterval(animateHouse, 2000);
+
+        class ParticleSystem {
+    constructor() {
+        this.particles = [];
+        this.container = document.getElementById('particleContainer');
+    }
+
+    createParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 2 + 1;
+        const lifetime = Math.random() * 1000 + 1000;
+        
+        this.particles.push({
+            element: particle,
+            vx: Math.cos(angle) * velocity,
+            vy: Math.sin(angle) * velocity,
+            life: lifetime
+        });
+        
+        this.container.appendChild(particle);
+    }
+
+    update() {
+        for(let i = this.particles.length - 1; i >= 0; i--) {
+            const particle = this.particles[i];
+            particle.life -= 16;
+            
+            if(particle.life <= 0) {
+                this.container.removeChild(particle.element);
+                this.particles.splice(i, 1);
+                continue;
+            }
+            
+            const x = parseFloat(particle.element.style.left);
+            const y = parseFloat(particle.element.style.top);
+            
+            particle.element.style.left = (x + particle.vx) + 'px';
+            particle.element.style.top = (y + particle.vy) + 'px';
+            particle.element.style.opacity = particle.life / 1000;
+        }
+    }
+}
+
+const particles = new ParticleSystem();
+let magneticActive = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
+let velocityX = 0;
+let velocityY = 0;
+
+
+document.addEventListener('mousemove', (e) => {
+    requestAnimationFrame(() => {
+        const texture = document.getElementById('textureBase');
+        const magnetic = document.getElementById('magneticField');
+        
+
+        velocityX = e.clientX - lastMouseX;
+        velocityY = e.clientY - lastMouseY;
+        
+
+        magnetic.style.left = (e.clientX - 100) + 'px';
+        magnetic.style.top = (e.clientY - 100) + 'px';
+        magnetic.style.opacity = '1';
+
+        if(Math.random() < 0.3) {
+            particles.createParticle(e.clientX, e.clientY);
+        }
+        
+
+        const distortionX = velocityX * 0.1;
+        const distortionY = velocityY * 0.1;
+        texture.style.transform = `translate(${distortionX}px, ${distortionY}px)`;
+        
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+    });
+});
+
+
+document.addEventListener('click', (e) => {
+    const wave = document.createElement('div');
+    wave.className = 'energy-wave';
+    wave.style.left = e.clientX + 'px';
+    wave.style.top = e.clientY + 'px';
+    
+    document.getElementById('waveContainer').appendChild(wave);
+    
+
+    for(let i = 0; i < 20; i++) {
+        particles.createParticle(e.clientX, e.clientY);
+    }
+    
+
+    const glitch = document.getElementById('glitchOverlay');
+    glitch.style.opacity = '0.5';
+    setTimeout(() => {
+        glitch.style.opacity = '0';
+    }, 200);
+    
+
+    setTimeout(() => {
+        wave.remove();
+    }, 2000);
+});
+
+
+function animate() {
+    particles.update();
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+
+document.addEventListener('mouseleave', () => {
+    const magnetic = document.getElementById('magneticField');
+    magnetic.style.opacity = '0';
+});
+
+
+setInterval(() => {
+    if(Math.random() < 0.1) {
+        const glitch = document.getElementById('glitchOverlay');
+        glitch.style.opacity = '0.3';
+        setTimeout(() => {
+            glitch.style.opacity = '0';
+        }, 100);
+    }
+}, 2000);
+
+
+const guide = document.querySelector('.floating-guide');
+
+
+guide.addEventListener('click', (e) => {
+
+    window.location.href = "./green2.html";
+
+
+    e.stopPropagation();
+});
+
+
+guide.style.pointerEvents = 'all';
+
+
+function initIntroSequence() {
+    createStars();
+    createPlanets();
+    
+    const introSequence = document.getElementById('introSequence');
+    const container = document.querySelector('.container');
+    
+    setTimeout(() => {
+        document.querySelector('.space-corridor').style.opacity = '1';
+    }, 1000);
+    
+    setTimeout(() => {
+        introSequence.classList.add('fade-out');
+        container.classList.add('show');
+    }, 4000);
+    
+    setTimeout(() => {
+        introSequence.remove();
+    }, 5000);
+}
+
+function createStars() {
+    const starField = document.getElementById('starField');
+    for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        starField.appendChild(star);
+    }
+}
+
+function createPlanets() {
+    const planetSystem = document.getElementById('planetSystem');
+    planetSystem.innerHTML = '';
+    
+    function createSinglePlanet() {
+        const planet = document.createElement('div');
+        planet.className = 'planet';
+        
+    
+        planet.style.left = Math.random() * 80 + 10 + '%';
+        planet.style.top = Math.random() * 80 + 10 + '%';
+        
+
+        const ring = document.createElement('div');
+        ring.className = 'planet-ring';
+        planet.appendChild(ring);
+        
+        planetSystem.appendChild(planet);
+        
+
+        setTimeout(() => {
+            planet.remove();
+        }, 4000);
+    }
+    
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            createSinglePlanet();
+        }, i * 800);
+    }
+    
+
+    setInterval(() => {
+        createSinglePlanet();
+    }, 1600);
+}
+
+
+window.addEventListener('load', () => {
+    const introSequence = document.getElementById('introSequence');
+    const container = document.querySelector('.container');
+    
+    createStars();
+    createPlanets();
+    
+    setTimeout(() => {
+        document.querySelector('.space-corridor').style.opacity = '1';
+    }, 1000);
+    
+    setTimeout(() => {
+        introSequence.classList.add('fade-out');
+        container.classList.add('show');
+    }, 4000);
+    
+    setTimeout(() => {
+        introSequence.remove();
+    }, 5000);
+});
+
+
+window.addEventListener('load', initIntroSequence);
+
+
+    </script>
+</body>
+</html>

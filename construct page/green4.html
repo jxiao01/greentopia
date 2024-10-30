@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/star.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlayed p5.js Sketches</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="sketch1.js"></script>
+    <style>
+      
+.astrolabe::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--primary-green);
+    border-radius: 50%;
+    animation: glowPulse 2s infinite;
+    pointer-events: none;
+}
+
+.loading-ring {
+    position: absolute;
+    inset: -10px;
+    border: 2px solid transparent;
+    border-top-color: var(--primary-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.astrolabe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, 
+        transparent 0%, 
+        rgba(134, 255, 134, 0.1) 50%, 
+        transparent 100%);
+    pointer-events: none;
+    animation: fogEffect 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(134, 255, 134, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(134, 255, 134, 0.5); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fogEffect {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+      :root {
+            --primary-green: #86ff86;
+            --dark-green: #064a06;
+            --glow: 0 0 10px #86ff86;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: transparent;
+            color: var(--primary-green);
+            font-family: 'ABC Synt', monospace;
+            overflow: hidden;
+        }
+
+        #intro-sequence {
+            position: fixed;
+            inset: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+
+        .grid-background {
+            position: fixed;
+            inset: 0;
+            background: 
+                linear-gradient(rgba(134, 255, 134, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(134, 255, 134, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+            opacity: 0.3;
+            transform: perspective(1000px) rotateX(60deg);
+            transform-origin: top;
+        }
+
+        .astrolabe-container {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .astrolabe {
+            position: relative;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            border: 2px solid rgba(134, 255, 134, 0.3);
+            background: transparent;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .degree-marks {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+.degree-marks::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid rgba(134, 255, 134, 0.1);
+    background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 5.625deg,
+        rgba(134, 255, 134, 0.1) 5.625deg,
+        rgba(134, 255, 134, 0.1) 11.25deg
+    );
+}
+
+.major-marks {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid rgba(134, 255, 134, 0.2);
+}
+
+.major-marks::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 22.5deg,
+        rgba(134, 255, 134, 0.3) 22.5deg,
+        rgba(134, 255, 134, 0.3) 23.5deg
+    );
+}
+
+        .pointer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 300px;
+            background: var(--primary-green);
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--glow);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .pointer.locked {
+            box-shadow: 0 0 20px var(--primary-green);
+        }
+
+        .image-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: rgba(134, 255, 134, 0.05);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(134, 255, 134, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .image-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            filter: url(#ripple);
+        }
+
+        .info-display {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .progress-text {
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+
+        .status-text {
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .preview-grid {
+            position: absolute;
+            right: -200px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 160px;
+        }
+
+        .preview-cell {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(134, 255, 134, 0.05);
+            border: 1px solid rgba(134, 255, 134, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0.3;
+        }
+
+        .preview-cell.viewed {
+            opacity: 1;
+            border-color: var(--primary-green);
+            filter: url(#glitch);
+        }
+
+        @keyframes filterSwitch {
+    0%, 100% { filter: url(#ripple); }
+    33% { filter: url(#magnetic); }
+    66% { filter: url(#glitch); }
+}
+        .enter-button {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            font-family: inherit;
+            font-size: 16px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .enter-button.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .enter-button:hover {
+            background: rgba(134, 255, 134, 0.1);
+            box-shadow: var(--glow);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .hint-text {
+            position: absolute;
+            top: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+.astrolabe-container {
+    animation: spaceFloat 10s infinite ease-in-out;
+}
+
+.grid-background {
+    animation: gridMove 20s infinite linear;
+}
+
+@keyframes spaceFloat {
+    0%, 100% { 
+        transform: translate(0, 0) rotate(0deg); 
+    }
+    25% { 
+        transform: translate(10px, -10px) rotate(1deg); 
+    }
+    50% { 
+        transform: translate(-5px, 15px) rotate(-1deg); 
+    }
+    75% { 
+        transform: translate(-10px, -5px) rotate(0.5deg); 
+    }
+}
+
+@keyframes gridMove {
+    0% {
+        transform: perspective(1000px) rotateX(60deg) translateY(0);
+    }
+    100% {
+        transform: perspective(1000px) rotateX(60deg) translateY(20px);
+    }
+}
+
+.star-background {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(134, 255, 134, 0.2) 0%, transparent 60%);
+    animation: starPulse 4s infinite ease-in-out;
+    z-index: -1;
+}
+
+@keyframes starPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+}
+
+
+.image-display {
+  filter: url(#magnetic);
+  animation: filterSwitch 10s infinite;
+}
+
+@keyframes imagePulse {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 20px rgba(134, 255, 134, 0.3);
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.05);
+        box-shadow: 0 0 30px rgba(134, 255, 134, 0.5);
+    }
+}
+
+.pointer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.pointer::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 300px;
+    background: linear-gradient(to bottom, 
+        var(--primary-green) 0%,
+        rgba(134, 255, 134, 0.5) 70%,
+        transparent 100%
+    );
+}
+
+.pointer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-green);
+    border-radius: 50%;
+    animation: scanPulse 2s infinite ease-in-out;
+}
+
+@keyframes scanPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 10px var(--primary-green);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 0 0 20px var(--primary-green);
+    }
+}
+
+      body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #sketch1-container, #sketch2-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      #sketch1-container {
+        z-index: 1;
+      }
+
+      .star-background {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(134, 255, 134, 0.2) 0%, transparent 60%);
+    animation: starPulse 4s infinite ease-in-out;
+    z-index: -1;
+}
+
+@keyframes starPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+}
+
+.reentry-button {
+   position: fixed;
+   top: 30px;
+   right: 40px;
+   padding: 15px 40px;
+   background: transparent;
+   border: 2px solid var(--primary-green);
+   color: var(--primary-green);
+   font-family: inherit;
+   font-size: 16px;
+   letter-spacing: 2px;
+   cursor: pointer;
+   transform-style: preserve-3d;
+   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+   overflow: hidden;
+   z-index: 1000;
+   backdrop-filter: blur(5px);
+}
+
+.reentry-button::before {
+   content: '';
+   position: absolute;
+   inset: -2px;
+   border: 2px solid var(--primary-green);
+   border-radius: 2px;
+   animation: glowPulse 2s infinite;
+   pointer-events: none;
+   opacity: 0.7;
+}
+
+.reentry-button::after {
+   content: '';
+   position: absolute;
+   inset: 0;
+   background: radial-gradient(circle at center, 
+       rgba(134, 255, 134, 0.1) 0%,
+       transparent 70%);
+   opacity: 0;
+   transition: opacity 0.4s ease;
+}
+
+.reentry-button:hover {
+   background: rgba(134, 255, 134, 0.1);
+   transform: translateY(-2px) scale(1.02);
+   letter-spacing: 3px;
+}
+
+.reentry-button:hover::after {
+   opacity: 1;
+   animation: pulseGlow 2s infinite;
+}
+
+.glow-ring {
+   position: absolute;
+   inset: -4px;
+   border: 2px solid transparent;
+   border-top-color: var(--primary-green);
+   border-radius: 2px;
+   animation: spin 4s linear infinite;
+   pointer-events: none;
+}
+
+.glow-ring::before {
+   content: '';
+   position: absolute;
+   top: -2px;
+   left: 50%;
+   width: 4px;
+   height: 4px;
+   background: var(--primary-green);
+   border-radius: 50%;
+   box-shadow: 0 0 10px var(--primary-green);
+   animation: orbitalPoint 4s linear infinite;
+}
+
+@keyframes pulseGlow {
+   0%, 100% { opacity: 0.3; }  
+   50% { opacity: 0.8; }
+}
+
+@keyframes spin {
+   to { transform: rotate(360deg); }
+}
+
+@keyframes orbitalPoint {
+   from { transform: rotate(0deg) translateX(2px); }
+   to { transform: rotate(-360deg) translateX(2px); }
+}
+
+@keyframes glowPulse {
+   0%, 100% { 
+       box-shadow: 0 0 15px rgba(134, 255, 134, 0.3);
+       transform: scale(1);
+   }
+   50% { 
+       box-shadow: 0 0 25px rgba(134, 255, 134, 0.5);
+       transform: scale(1.02);
+   }
+}
+
+    </style>
+  </head>
+  <body>
+
+    <div class="press-r-hint">
+        PRESS <span class="key-highlight">R</span> TO PROCEED
+        <div class="glow-effect"></div>
+    </div>
+
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+      <defs>
+          <filter id="ripple">
+              <feTurbulence 
+                  type="turbulence" 
+                  baseFrequency="0.01" 
+                  numOctaves="1">
+                  <animate 
+                      attributeName="baseFrequency" 
+                      dur="20s" 
+                      values="0.01;0.005;0.01" 
+                      repeatCount="indefinite"/>
+              </feTurbulence>
+              <feDisplacementMap 
+                  in="SourceGraphic" 
+                  in2="turbulence" 
+                  scale="3"/>
+          </filter>
+  
+          <filter id="magnetic">
+              <feGaussianBlur stdDeviation="0.5" result="blur"/>
+              <feDisplacementMap 
+                  in="SourceGraphic" 
+                  in2="blur" 
+                  scale="5"/>
+          </filter>
+
+          <filter id="glitch">
+              <feTurbulence 
+                  type="fractalNoise" 
+                  baseFrequency="0.03" 
+                  numOctaves="1">
+                  <animate 
+                      attributeName="seed" 
+                      from="0" 
+                      to="100" 
+                      dur="2s" 
+                      repeatCount="indefinite"/>
+              </feTurbulence>
+              <feComposite
+                  in="SourceGraphic"
+                  in2="turbulence"
+                  operator="arithmetic"
+                  k1="0"
+                  k2="1"
+                  k3="0.1"
+                  k4="0"/>
+          </filter>
+      </defs>
+  </svg>
+
+  <button class="reentry-button" onclick="location.href='../green.html'">
+    RE-LAND ON GREENTOPIA
+    <div class="glow-ring"></div>
+</button>
+
+
+
+    <div id="intro-sequence">
+      <div class="grid-background"></div>
+      
+      <div class="astrolabe-container">
+          
+          <div class="astrolabe">
+              <div class="degree-ring"></div>
+              <div class="degree-marks"></div>
+              <div class="major-marks"></div>
+
+ 
+              <div class="pointer"></div>
+              
+  
+              <div class="image-display">
+                  <img src="" alt="G">
+              </div>
+          </div>
+
+ 
+          <div class="info-display">
+              <div class="progress-text">0/16 DISCOVERED</div>
+              <div class="status-text">AWAITING INTERACTION...</div>
+          </div>
+
+
+          <div class="preview-grid"></div>
+
+          <button class="enter-button">ENTER GREENTOPIA</button>
+      </div>
+  </div>
+
+    <div id="sketch1-container"></div>
+
+    <script>
+
+
+document.addEventListener('keydown', function(e) {
+    if (e.key.toLowerCase() === 'r') {
+        const hint = document.querySelector('.press-r-hint');
+        if (hint) {
+            hint.style.opacity = '0';
+            hint.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => {
+                hint.remove();
+            }, 3000);
+        }
+    }
+});
+
+const hintStyle = document.createElement('style');
+hintStyle.textContent = `
+    .press-r-hint {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--primary-green);
+        font-family: 'ABCSyntRegular', monospace;
+        font-size: 20px;
+        letter-spacing: 4px;
+        text-shadow: 0 0 10px rgba(134, 255, 134, 0.5);
+        z-index: 2000;
+        pointer-events: none;
+        transition: all 0.5s ease;  /* 添加过渡效果 */
+    }
+
+    .key-highlight {
+        font-size: 32px;
+        font-weight: bold;
+        display: inline-block;
+        animation: keyPulse 2s infinite ease-in-out;
+        text-shadow: 0 0 20px var(--primary-green);
+    }
+
+    @keyframes keyPulse {
+        0%, 100% { 
+            transform: scale(1);
+            text-shadow: 0 0 20px var(--primary-green);
+        }
+        50% { 
+            transform: scale(1.2);
+            text-shadow: 0 0 30px var(--primary-green);
+        }
+    }
+`;
+
+document.head.appendChild(hintStyle);
+       let currentStep = 0;
+        const totalSteps = 16;
+        let isLocked = true;
+        let viewedImages = 0;
+
+        const pointer = document.querySelector('.pointer');
+        const imageDisplay = document.querySelector('.image-display');
+        const progressText = document.querySelector('.progress-text');
+        const statusText = document.querySelector('.status-text');
+        const enterButton = document.querySelector('.enter-button');
+        const previewGrid = document.querySelector('.preview-grid');
+
+    
+        for (let i = 0; i < totalSteps; i++) {
+            const tick = document.createElement('div');
+            tick.className = 'tick';
+            const angle = i * (360 / totalSteps);
+            tick.style.transform = `rotate(${angle}deg) translateX(350px)`;
+            tick.dataset.index = i;
+            document.querySelector('.astrolabe').appendChild(tick);
+
+          
+            const previewCell = document.createElement('div');
+            previewCell.className = 'preview-cell';
+            previewCell.dataset.index = i;
+            previewGrid.appendChild(previewCell);
+        }
+
+        function handleRotation(targetStep) {
+    if (targetStep === currentStep || targetStep >= totalSteps) return;
+    
+    const startRotation = currentStep * (360 / totalSteps);
+    const endRotation = targetStep * (360 / totalSteps);
+    
+
+    pointer.style.transition = 'transform 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
+    pointer.style.transform = `translate(-50%, -100%) rotate(${endRotation}deg)`;
+    
+    document.querySelectorAll('.ring').forEach(ring => {
+        ring.style.transform = `rotate(${-endRotation * 0.5}deg)`;
+    });
+    
+
+    playRotationSound();
+    
+
+    currentStep = targetStep;
+    showLoadingEffect();
+    updateStatus('ROTATING...', 'scanning');
+    
+    setTimeout(() => {
+        showImage(targetStep);
+        updateStatus('IMAGE DISCOVERED', 'complete');
+    }, 1500);
+}
+
+function playRotationSound() {
+
+}
+
+function showLoadingEffect() {
+    const loadingRing = document.createElement('div');
+    loadingRing.className = 'loading-ring';
+    imageDisplay.appendChild(loadingRing);
+    
+    setTimeout(() => loadingRing.remove(), 1500);
+}
+
+const GREENTOPIA_IMAGES = [
+    { id: 0, path: 'texture-1.png', title: 'CONCEPTION' },
+    { id: 1, path: 'texture-2.png', title: 'STRUCTURE' },
+    { id: 2, path: 'texture-3.png', title: 'LANGUAGE' },
+    { id: 3, path: 'texture-4.png', title: 'AESTHETICS' },
+    { id: 4, path: 'texture-5.png', title: 'GROWTH' },
+    { id: 5, path: 'texture-6.png', title: 'HARMONY' },
+    { id: 6, path: 'texture-7.png', title: 'CYCLES' },
+    { id: 7, path: 'texture-8.png', title: 'ENERGY' },
+    { id: 8, path: 'texture-9.png', title: 'NETWORKS' },
+    { id: 9, path: 'texture-10.png', title: 'ADAPTATION' },
+    { id: 10, path: 'texture-11.png', title: 'SYNTHESIS' },
+    { id: 11, path: 'texture-12.png', title: 'RENEWAL' },
+    { id: 12, path: 'texture-13.png', title: 'FLOW' },
+    { id: 13, path: 'texture-14.png', title: 'BALANCE' },
+    { id: 14, path: 'texture-15.png', title: 'GROWTH' },
+    { id: 15, path: 'texture-16.png', title: 'UNITY' }
+];
+
+function showImage(index) {
+    const imageData = GREENTOPIA_IMAGES[index];
+    const img = imageDisplay.querySelector('img');
+    img.src = imageData.path;
+    img.alt = imageData.title;
+    img.style.opacity = '1';
+
+    const previewCell = previewGrid.children[index];
+    if (!previewCell.classList.contains('viewed')) {
+        previewCell.classList.add('viewed');
+        previewCell.style.backgroundImage = `url(${imageData.path})`;
+        previewCell.style.backgroundSize = 'cover';
+        viewedImages++;
+        updateProgress();
+    }
+
+
+    updateStatus(`ANALYZING: ${imageData.title}`);
+
+
+    document.querySelectorAll('.tick').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tick[data-index="${index}"]`).classList.add('active');
+}
+
+
+        function updateProgress() {
+            progressText.textContent = `${viewedImages}/16 DISCOVERED`;
+            
+            if (viewedImages === totalSteps) {
+                showEnterButton();
+            }
+        }
+
+        function updateStatus(text, type = 'default') {
+            statusText.style.opacity = '0';
+            setTimeout(() => {
+                statusText.textContent = text;
+                statusText.style.opacity = '1';
+            }, 300);
+        }
+
+
+        function showEnterButton() {
+            enterButton.classList.add('visible');
+        }
+
+
+        document.querySelectorAll('.tick').forEach(tick => {
+            tick.addEventListener('click', () => {
+                if (!isLocked) {
+                    const targetStep = parseInt(tick.dataset.index);
+                    handleRotation(targetStep);
+                }
+            });
+        });
+
+        pointer.addEventListener('click', () => {
+            isLocked = !isLocked;
+            pointer.classList.toggle('locked');
+            updateStatus(isLocked ? 'LOCKED' : 'READY TO ROTATE');
+        });
+
+
+        enterButton.addEventListener('click', () => {
+
+            document.getElementById('intro-sequence').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-sequence').style.display = 'none';
+            }, 1000);
+        });
+
+        showImage(0);
+
+
+function createDataStream() {
+    const dataContainer = document.createElement('div');
+    dataContainer.className = 'data-stream';
+    document.body.appendChild(dataContainer);
+
+    setInterval(() => {
+        const line = document.createElement('div');
+        line.className = 'stream-line';
+        line.textContent = generateRandomData();
+        dataContainer.appendChild(line);
+
+        if (dataContainer.children.length > 10) {
+            dataContainer.removeChild(dataContainer.children[0]);
+        }
+    }, 2000);
+}
+
+createDataStream();
+
+let isRotating = false;
+let autoRotateInterval = null;
+
+
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'r' && !isRotating) {
+        startAutoRotate();
+    }
+});
+
+function startAutoRotate() {
+    if (viewedImages >= totalSteps) {
+        return;
+    }
+
+    isRotating = true;
+    updateStatus('AUTO ROTATION INITIATED', 'system');
+
+    if (autoRotateInterval) {
+        clearInterval(autoRotateInterval);
+    }
+
+    autoRotateInterval = setInterval(() => {
+        const nextStep = (currentStep + 1) % totalSteps;
+        handleSingleRotation(nextStep);
+
+        if (viewedImages >= totalSteps) {
+            clearInterval(autoRotateInterval);
+            isRotating = false;
+        }
+    }, 1000);
+}
+
+function handleSingleRotation(targetStep) {
+    if (targetStep === currentStep) return;
+    
+    const endRotation = targetStep * (360 / totalSteps);
+  
+
+    pointer.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
+    pointer.style.transform = `translate(-50%, -100%) rotate(${endRotation}deg) scale(1.1)`;
+    
+    setTimeout(() => {
+        pointer.style.transform = `translate(-50%, -100%) rotate(${endRotation}deg) scale(1)`;
+    }, 500);
+    
+    currentStep = targetStep;
+    updateStatus(`ANALYZING SECTOR ${targetStep + 1}/16`, 'scanning');
+    
+    setTimeout(() => {
+        showImage(targetStep);
+    }, 800);
+}
+
+function addRotationEffect(step) {
+
+    const scanLine = document.createElement('div');
+    scanLine.className = 'scan-line';
+    document.querySelector('.astrolabe').appendChild(scanLine);
+    
+    setTimeout(() => scanLine.remove(), 1500);
+    document.querySelectorAll('.tick').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tick[data-index="${step}"]`).classList.add('active');
+}
+
+const styleSheet = document.createElement('style');
+styleSheet.textContent = newStyles;
+document.head.appendChild(styleSheet);
+
+
+function showImage(index) {
+    const imgSrc = `texture-${index + 1}.png`;
+    const img = imageDisplay.querySelector('img');
+    img.src = imgSrc;
+    img.style.opacity = '1';
+
+    const previewCell = previewGrid.children[index];
+    if (!previewCell.classList.contains('viewed')) {
+        previewCell.classList.add('viewed');
+        viewedImages++;
+        updateProgress();
+    }
+
+    if (viewedImages === totalSteps) {
+        clearInterval(autoRotateInterval);
+        isRotating = false;
+        showEnterButton();
+    }
+}
+
+function updateStatus(text, type = 'default') {
+    statusText.style.opacity = '0';
+    setTimeout(() => {
+        statusText.textContent = text;
+        statusText.style.opacity = '1';
+    }, 300);
+}
+
+
+
+  </script>
+
+  </body>
+</html>
